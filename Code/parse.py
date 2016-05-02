@@ -1,3 +1,7 @@
+#!/usr/bin/python
+
+import sys
+
 def check_arcs():
     """
     Checks all arcs in yeasy_data, if a->b != b->a then we print.
@@ -17,4 +21,7 @@ def check_arcs():
             dictionary[(tail, head)] = score
 
 if __name__ == "__main__":
-    check_arcs()
+    if sys.argv[1] == "check_arcs":
+        check_arcs()
+    else:
+        build_network()
