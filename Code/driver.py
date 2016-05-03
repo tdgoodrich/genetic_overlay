@@ -97,7 +97,7 @@ def write_adjacency_matrices(vertices, edgelist,
     pvalue_outfile = open(pvalue_filename, "w")
     score_row = ""
     pvalue_row = ""
-    header = ",".join(["%s, " % (v) for v in vertices])
+    header = "," + "".join(["%s, " % (v) for v in vertices])
     score_outfile.write(header + "\n")
     pvalue_outfile.write(header + "\n")
     for v1 in vertices:
