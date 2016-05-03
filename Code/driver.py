@@ -3,6 +3,7 @@
 import sys
 import networkx as nx
 import matplotlib.pyplot as plt
+import OrderedSet
 
 def check_arcs(filename="Data/yeast_data.txt"):
     """
@@ -28,7 +29,7 @@ def build_clean_data(filename="Data/yeast_data.txt"):
     (i.e. undirected where |epsilon| > 0.08, P < 0.05).
     """
     edgelist = {}
-    vertices = set()
+    vertices =
     infile = open(filename, "r")
     for line in infile:
         line = line.split()
@@ -56,7 +57,7 @@ def build_clean_data(filename="Data/yeast_data.txt"):
 
 def build_edgelist(filename="Data/clean_yeast_data.txt"):
     edgelist = {}
-    vertices = set()
+    vertices = OrderedSet()
     infile = open(filename, "r")
     for line in infile:
         tail, head, score, pvalue = line.split()
