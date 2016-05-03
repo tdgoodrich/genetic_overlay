@@ -69,8 +69,8 @@ def write_adjacency_matrices(vertices, edgelist, score_filename="Code/score_adja
     pvalue_row = ""
     for v1 in vertices:
         for v2 in vertices:
-            score_row += "%s," % edgelist.get((v1, v2), (0,0))[0]
-            pvalue_row += "%s," % edgelist.get((v1, v2), (0,0))[1]
+            score_row += "%s," % edgelist.get((v1, v2), edgelist.get((v2, v1), (0,0)))[0]
+            pvalue_row += "%s," % edgelist.get((v1, v2), edgelist.get((v2, v1), (0,0)))[1]
         score_row = score_row[:-1] + "\n"
         pvalue_row = pvalue_row[:-1] + "\n"
         score_outfile.write(score_row)
@@ -79,6 +79,11 @@ def write_adjacency_matrices(vertices, edgelist, score_filename="Code/score_adja
         pvalue_row = ""
     score_outfile.close()
     pvalue_outfile.close()
+
+def plot_graph(verices, edgelist):
+	pos = nx.spring_layout(G)
+	nx.draw(G, pos)
+	plt.savefig("graph.png")
 
 if __name__ == "__main__":
     if sys.argv[1] == "check_arcs":
