@@ -21,8 +21,8 @@ with open(sys.argv[1], 'r') as reader:
 		wt = abs(wt)
 		G.add_edge(gene1, gene2, weight=wt)
 
-#A = nx.adjacency_matrix(G)
-#print(A.todense())
+A = nx.adjacency_matrix(G)
+print "Adjacency matrix: ", A.todense()
 
 #read through connected components
 ccs = nx.connected_components(G)
@@ -44,10 +44,10 @@ for i in ccs:
 	old = cpy
 
 	for l in xrange(0,mcl_loops):
-		exp = np.dot(old, old)	
+		exp = np.dot(old, old)
 		#print exp
 
-		#inflation: 
+		#inflation:
 		#square all elements in matrix
 		inf = np.square(exp)
 		#print inf
@@ -61,8 +61,10 @@ for i in ccs:
 			for m in range(0, len(inf)):
 				if sum != 0:
 					new[m,j] = inf.item(m,j)/sum
+					if new[m,j] < 0.000001:
+						new[m,j] = 0
 		old = new
-	#print old
+	print "Converged to: ", old
 	#find cluster!
 	#every pair (i, j) which has a non-zero value are in the same cluster
 
