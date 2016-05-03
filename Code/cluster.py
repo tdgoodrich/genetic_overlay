@@ -57,7 +57,7 @@ for i in ccs:
 		for j in range(0, len(inf)):
 			sum = 0
 			for k in range(0, len(inf)):
-				sum = sum + ccm.item((k,j))
+				sum = sum + inf.item((k,j))
 			for m in range(0, len(inf)):
 				if sum != 0:
 					new[m,j] = inf.item(m,j)/sum
