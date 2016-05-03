@@ -41,7 +41,7 @@ def write_edgelist(edgelist, filename):
     outfile.close()
 
 
-def write_adjacency_matrices(edgelist, filename, vertex_file):
+def write_adjacency_matrices(edgelist, vertices, filename, vertex_file):
     """
     Write a dense format matrix of edges to dense-yeast-ppi.txt.
 
@@ -53,7 +53,9 @@ def write_adjacency_matrices(edgelist, filename, vertex_file):
     """
     dense_outfile = open(filename, "w")
     dense_row = ""
+    dense_outfile.write(','.join(vertices) + '\n')
     for v1 in vertices:
+        dense_row = v1 + ','
         for v2 in vertices:
             try:
                 val = edgelist[(v1, v2)]
@@ -62,7 +64,6 @@ def write_adjacency_matrices(edgelist, filename, vertex_file):
             dense_row += "%s," % val
         dense_row = dense_row[:-1] + "\n"
         dense_outfile.write(dense_row)
-        dense_row = ""
     dense_outfile.close()
 
 if __name__ == "__main__":
@@ -70,5 +71,6 @@ if __name__ == "__main__":
         vertices, edgelist = build_graph("Data/BIOGRID-MV-Physical-3.4.136.tab2.txt")
         write_edgelist(edgelist, "Data/sparse-yeast-ppi.txt")
         write_adjacency_matrices(edgelist,
+                                 vertices,
                                  "Data/dense-yeast-ppi.txt",
                                  "Data/gene_order.csv")
