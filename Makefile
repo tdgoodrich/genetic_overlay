@@ -1,5 +1,6 @@
 clean_data:
 	python Code/driver.py build_clean_data
+
 arc:
 	python Code/driver.py check_arcs
 
@@ -14,3 +15,6 @@ gephi:
 
 edgelist:
 	python Code/driver.py build_edgelist
+
+ppi:
+	python Code/parse_ppi.py build_graph

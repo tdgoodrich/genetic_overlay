@@ -3,6 +3,7 @@
 import sys
 import networkx as nx
 import matplotlib.pyplot as plt
+import OrderedSet
 
 def check_arcs(filename="Data/yeast_data.txt"):
     """
@@ -28,7 +29,7 @@ def build_clean_data(filename="Data/yeast_data.txt"):
     (i.e. undirected where |epsilon| > 0.08, P < 0.05).
     """
     edgelist = {}
-    vertices = set()
+    vertices = OrderedSet.OrderedSet()
     infile = open(filename, "r")
     for line in infile:
         line = line.split()
@@ -56,7 +57,7 @@ def build_clean_data(filename="Data/yeast_data.txt"):
 
 def build_edgelist(filename="Data/clean_yeast_data.txt"):
     edgelist = {}
-    vertices = set()
+    vertices = OrderedSet()
     infile = open(filename, "r")
     for line in infile:
         tail, head, score, pvalue = line.split()
@@ -96,10 +97,14 @@ def write_adjacency_matrices(vertices, edgelist,
     pvalue_outfile = open(pvalue_filename, "w")
     score_row = ""
     pvalue_row = ""
+    header = "," + "".join(["%s, " % (v) for v in vertices])
+    score_outfile.write(header + "\n")
+    pvalue_outfile.write(header + "\n")
     for v1 in vertices:
+        score_row += ("%s, " % (v1))
         for v2 in vertices:
-            score_row += "%s," % edgelist.get((v1, v2), edgelist.get((v2, v1), (0,0)))[0]
-            pvalue_row += "%s," % edgelist.get((v1, v2), edgelist.get((v2, v1), (0,0)))[1]
+            score_row += " %s," % edgelist.get((v1, v2), edgelist.get((v2, v1), (0,0)))[0]
+            pvalue_row += " %s," % edgelist.get((v1, v2), edgelist.get((v2, v1), (0,0)))[1]
         score_row = score_row[:-1] + "\n"
         pvalue_row = pvalue_row[:-1] + "\n"
         score_outfile.write(score_row)
