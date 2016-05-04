@@ -12,8 +12,8 @@ with open(sys.argv[1], 'r') as reader:
 	content = reader.readlines()
 
 	for row in content:
-		gene1, gene2, weight = row.split()
-		G.add_edge(int(gene1), int(gene2), weight=abs(float(weight)))
+		gene1, gene2, weight, pvalue = row.split()
+		G.add_edge(gene1, gene2, weight=abs(float(weight)))
 
 #read through connected components
 components = nx.weakly_connected_components(G)
