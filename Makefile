@@ -18,3 +18,6 @@ edgelist:
 
 ppi:
 	python Code/parse_ppi.py build_graph
+
+cluster:
+	python Code/driver.py cluster

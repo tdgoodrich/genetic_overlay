@@ -5,6 +5,10 @@ import networkx as nx
 import matplotlib.pyplot as plt
 import OrderedSet
 
+################################################################################
+# Subroutines for checking the data for properties
+################################################################################
+
 def check_arcs(filename="Data/yeast_data.txt"):
     """
     Checks all arcs in yeasy_data, if a->b != b->a then we print.
@@ -23,7 +27,10 @@ def check_arcs(filename="Data/yeast_data.txt"):
         else:
             data[(tail, head)] = score
 
-def build_clean_data(filename="Data/yeast_data.txt"):
+################################################################################
+# Subroutines for populating data structures from files
+################################################################################
+def build_threshold_data(threshold, filename="Data/yeast_data.txt"):
     """
     Build the network according to the original paper
     (i.e. undirected where |epsilon| > 0.08, P < 0.05).
@@ -37,7 +44,7 @@ def build_clean_data(filename="Data/yeast_data.txt"):
         vertices.add(tail)
         vertices.add(head)
         # If a valid score
-        if score != "NaN" and (score > 0.08 or score < -0.08) and pvalue < 0.05:
+        if score != "NaN" and (score > threshold or score < (-1 * threshold)) and pvalue < 0.05:
             # If the opposite arc has already been read
             if (head, tail) in edgelist:
                 # Remove both if different positivity
@@ -52,7 +59,7 @@ def build_clean_data(filename="Data/yeast_data.txt"):
                 edgelist[(tail, head)] = (score, pvalue)
 
     print "Vertices: %d" % len(vertices)
-    print "We had %d valid edges" % len(edgelist)
+    print "Edges: %d" % len(edgelist)
     return vertices, edgelist
 
 def build_edgelist(filename="Data/clean_yeast_data.txt"):
@@ -74,6 +81,10 @@ def build_graph(filename="Data/clean_yeast_data.txt"):
         G.add_node(head)
         G.add_edge(tail, head, score=score, pvalue=pvalue)
     return G
+
+################################################################################
+# Subroutines for writing data structures to files
+################################################################################
 
 def write_edgelist(edgelist, filename="Data/clean_yeast_data.txt"):
     """
@@ -114,9 +125,43 @@ def write_adjacency_matrices(vertices, edgelist,
     score_outfile.close()
     pvalue_outfile.close()
 
+def write_clusters():
+    G = build_graph()
+    print len(G.nodes())
+    cluster_lookup = {}
+    cluster_data = open("Data/cluster_idx200.csv", "r")
+    i = 0
+    for line in cluster_data.readlines():
+        try:
+            cluster_lookup[int(line)] += G.nodes()[i]
+        except:
+            try:
+                cluster_lookup[int(line)] = [G.nodes()[i]]
+            except:
+                break
+        i += 1
+
+    for key in cluster_lookup:
+        print key, "size: ", len(cluster_lookup[key])
+
+    for key1 in cluster_lookup:
+        for key2 in cluster_lookup:
+            for v1 in cluster_lookup[key1]:
+                for v2 in cluster_lookup[key2]:
+                    if key1 != key2:
+                        try:
+                            G.remove_edge(v1, v2)
+                        except:
+                            pass
+    nx.write_gexf(G, "Data/cluster200.gexf")
+
+ ################################################################################
+ # Main
+ ################################################################################
+
 if __name__ == "__main__":
     if sys.argv[1] == "build_clean_data":
-        vertices, edgelist = build_clean_data()
+        vertices, edgelist = build_clean_data(threshold=0.08)
         write_edgelist(edgelist)
         write_vertices(vertices)
         write_adjacency_matrices(vertices, edgelist)
@@ -133,3 +178,5 @@ if __name__ == "__main__":
     elif sys.argv[1] == "gephi":
         G = build_graph()
         nx.write_gexf(G, "Data/network.gexf")
+    elif sys.argv[1] == "cluster":
+        write_clusters()
