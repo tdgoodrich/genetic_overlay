@@ -62,13 +62,19 @@ if __name__ == "__main__":
                'YNL111C', 'YHR007C', 'YLR014C', 'YKL216W',
                'YNL078W', 'YJR005W', 'YJL130C']
 
-    adj_matrix = np.genfromtxt('../Data/score_adjacency_matrix.csv',
-                               delimiter=',', skip_header=1)
-    adj_matrix = np.delete(adj_matrix, 0, 1)
+    threshold = [0.1, 0.2, 0.3, 0.4, 0.5]
 
-    with open('../Data/score_adjacency_matrix.csv') as f:
-        gene_names = f.readline().rstrip().replace(' ', '').split(',')[1:-1]
+    for t in threshold:
+        adj_matrix = np.genfromtxt('../Data/score_adjacency_matrix.csv',
+                                   delimiter=',', skip_header=1)
+        adj_matrix = np.delete(adj_matrix, 0, 1)
 
-    evaluator = Evaluate()
-    print(evaluator.pairwise_network_enrichment(adj_matrix))
+        below_threshold_indices = adj_matrix < t
+        adj_matrix[below_threshold_indices] = 0
+
+        with open('../Data/score_adjacency_matrix.csv') as f:
+            gene_names = f.readline().rstrip().replace(' ', '').split(',')[1:-1]
+
+        evaluator = Evaluate()
+        print(evaluator.pairwise_network_enrichment(adj_matrix))
     # do reduced matrix?
