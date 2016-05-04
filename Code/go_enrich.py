@@ -47,8 +47,10 @@ class GoDictionary():
         self.go_dict = self.parse_terms()
 
     def get_terms_for_gene(self, gene_name='YBL021C'):
-        print(gene_name)
-        return self.go_dict[gene_name]
+        if gene_name in self.go_dict.keys():
+            return self.go_dict[gene_name]
+        else:
+            return []
 
     def gene_association_list(self, filename='../Data/go_slim_mapping.tab'):
         gene_list = defaultdict(set)
@@ -61,6 +63,7 @@ class GoDictionary():
                 if row[3] == 'P' and row[5]:
                     output_file.write(row[0] + '\t' + row[5] + '\n')
 
+    # returning only GO id for now
     def parse_terms(self, filename='../Data/go_slim_mapping.tab'):
         gene_dict = {}
         with open(filename, 'r') as csvfile:
@@ -68,9 +71,9 @@ class GoDictionary():
             for row in genereader:
                 if row[3] == 'P':
                     if row[0] in gene_dict.keys():
-                        gene_dict[row[0]].append((row[5], row[4]))
+                        gene_dict[row[0]].append(row[5])
                     else:
-                        gene_dict[row[0]] = [(row[5], row[4])]
+                        gene_dict[row[0]] = [row[5]]
         return gene_dict
 
 if __name__ == "__main__":
