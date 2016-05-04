@@ -4,9 +4,6 @@ clean_data:
 arc:
 	python Code/driver.py check_arcs
 
-graph:
-	python Code/driver.py build_graph
-
 plot:
 	python Code/driver.py plot_graph
 
