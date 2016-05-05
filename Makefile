@@ -10,3 +10,5 @@ cluster:
 	python Code/driver.py cluster
 ppi:
 	python Code/parse_ppi.py build_graph
+correlation:
+	python Code/driver.py correlation
