@@ -24,7 +24,8 @@ def threshold_reduction(element, threshold=0.00001):
 
 threshold_reduction_vectorized = np.vectorize(threshold_reduction)
 
-def markov_clustering(filename, max_loops=10):
+# Note: r=1.4 chosen to match original study
+def markov_clustering(filename, max_loops=20, r=1.4):
 	# Read adjacency matrix
 	with open(sys.argv[1], 'r') as infile:
 		data = list(csv.reader(infile))
@@ -58,11 +59,13 @@ def markov_clustering(filename, max_loops=10):
 
 			# Inflation step
 			# Assumes we want to square
-			component_matrix = np.square(component_matrix)
+			component_matrix = np.power(component_matrix, r)
 
 			# Normalize matrix and threshold close-to-zero
 			component_matrix = column_stochastic_matrix(component_matrix)
 			component_matrix = threshold_reduction_vectorized(component_matrix)
+
+		#print component_matrix
 
 		# Assumes n by n matrix
 		clusters = set()
