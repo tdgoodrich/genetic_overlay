@@ -9,9 +9,9 @@ from goatools.godag_plot import plot_gos, plot_results, plot_goid2goobj
 
 class GoEnrich():
     def __init__(self):
-        obodag = GODag("../Data/goslim_yeast.obo")
-        background = [line.strip() for line in open('../Data/gene_list.txt')]
-        geneid2gos_yeast = read_associations('../Data/geneid2gos_yeast.txt')
+        obodag = GODag("../Data/evaluation_reference/goslim_yeast.obo")
+        background = [line.strip() for line in open('../Data/evaluation_reference/gene_list.txt')]
+        geneid2gos_yeast = read_associations('../Data/evaluation_reference/geneid2gos_yeast.txt')
 
         self.goeaobj = GOEnrichmentStudy(
             background,
@@ -44,9 +44,9 @@ class GoEnrich():
 
 class GoDictionary():
     def __init__(self):
-        #self.go_dict = self.parse_terms()
+        self.go_dict = self.parse_terms()
         # functional -
-        self.go_dict = self.parse_functional_terms()
+        # self.go_dict = self.parse_functional_terms()
 
     def get_terms_for_gene(self, gene_name='YBL021C'):
         if gene_name in self.go_dict.keys():
@@ -54,10 +54,10 @@ class GoDictionary():
         else:
             return []
 
-    def gene_association_list(self, filename='../Data/go_slim_mapping.tab'):
+    def gene_association_list(self, filename='../Data/evaluation_reference/go_slim_mapping.tab'):
         gene_list = defaultdict(set)
 
-        output_file = open('../Data/geneid2gos_yeast.txt', 'w')
+        output_file = open('../Data/evaluation_reference/geneid2gos_yeast.txt', 'w')
 
         with open(filename, 'r') as csvfile:
             genereader = csv.reader(csvfile, delimiter='\t')
@@ -66,7 +66,7 @@ class GoDictionary():
                     output_file.write(row[0] + '\t' + row[5] + '\n')
 
     # returning only GO id for now
-    def parse_terms(self, filename='../Data/go_slim_mapping.tab'):
+    def parse_terms(self, filename='../Data/evaluation_reference/go_slim_mapping.tab'):
         gene_dict = {}
         with open(filename, 'r') as csvfile:
             genereader = csv.reader(csvfile, delimiter='\t')
@@ -79,8 +79,8 @@ class GoDictionary():
         return gene_dict
 
     def parse_functional_terms(self,
-                               go_mapping='../Data/go_slim_mapping.tab',
-                               go_functional_filename='../Data/GO_functional_slim.txt'):
+                               go_mapping='../Data/evaluation_reference/go_slim_mapping.tab',
+                               go_functional_filename='../Data/evaluation_reference/GO_functional_slim.txt'):
 
         go_functional_list = []
         with open(go_functional_filename, 'r') as csvfile:
