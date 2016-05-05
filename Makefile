@@ -6,8 +6,6 @@ edgelist:
 	python Code/driver.py build_edgelist
 gephi:
 	python Code/driver.py gephi
-cluster:
-	python Code/driver.py cluster
 ppi:
 	python Code/parse_ppi.py build_graph
 correlation:
