@@ -3,66 +3,98 @@
 import networkx as nx
 import matplotlib
 import sys
+import csv
 import numpy as np
+import time
 
-mcl_loops = int(sys.argv[2])
 
-with open(sys.argv[1], 'r') as reader:
-	G = nx.DiGraph()
-	content = reader.readlines()
+def column_stochastic_matrix(matrix):
+	# Row-stochasticize matrix
+	for col in xrange(len(matrix)):
+		col_sum = np.sum(matrix[:,col])
+		if col_sum != 0:
+			matrix[:,col] = np.divide(matrix[:,col], col_sum)
+	return matrix
 
-	for row in content:
-		gene1, gene2, weight, pvalue = row.split()
-		G.add_edge(gene1, gene2, weight=abs(float(weight)))
+def threshold_reduction(element, threshold=0.00001):
+	if element < threshold:
+		return 0
+	else:
+		return element
 
-#read through connected components
-components = nx.weakly_connected_components(G)
+threshold_reduction_vectorized = np.vectorize(threshold_reduction)
 
-#find clusters
-for component in components:
-	print component
+# Note: r=1.4 chosen to match original study
+def markov_clustering(filename, max_loops=20, r=1.4):
+	# Read adjacency matrix
+	with open(sys.argv[1], 'r') as infile:
+		data = list(csv.reader(infile))
+		genes = [x.replace(" ", "") for x in data[0]]
 
-	#create matrix
-	adjacency_matrix = nx.to_numpy_matrix(G, nodelist=component)
-	print adjacency_matrix
-	cpy = adjacency_matrix
+		# Remove headers
+		del data[0]
+		del genes[0]
 
-	#normalize matrix
-	for j in xrange(0, len(adjacency_matrix)):
-		sum = 0
-		for k in xrange(len(adjacency_matrix)):
-			sum += adjacency_matrix.item((k,j))
-		for m in xrange(len(adjacency_matrix)):
-			if sum != 0:
-				cpy[m,j] = adjacency_matrix.item(m,j)/sum
-	#print cpy
-	old = cpy
+		for row in data:
+			del row[0] # Remove header
+			row = [float(v) for v in row]
 
-	for l in xrange(mcl_loops):
-		exp = np.dot(old, old)
-		#print exp
+	# Construct the graph
+	adjacency_matrix = np.array(data)
+	G = nx.from_numpy_matrix(adjacency_matrix, create_using=nx.DiGraph())
 
-		#inflation:
-		#square all elements in matrix
-		inf = np.square(exp)
-		#print inf
+	# Loop over each component
+	components = nx.weakly_connected_components(G)
+	for component in components:
+		# Create component's matrix
+		component_matrix = nx.to_numpy_matrix(G, nodelist=component)
+		###print "Component's adjacency matrix: \n", component_matrix
 
-		#normalize matrix
-		new = inf
-		for j in range(0, len(inf)):
-			sum = 0
-			for k in range(0, len(inf)):
-				sum = sum + inf.item((k,j))
-			for m in range(0, len(inf)):
-				if sum != 0:
-					new[m,j] = inf.item(m,j)/sum
-					if new[m,j] < 0.000001:
-						new[m,j] = 0
-		old = new
-	print "Converged to: \n", old
-	#find cluster!
-	#every pair (i, j) which has a non-zero value are in the same cluster
+		# Stochastcize the columns
+		component_matrix = column_stochastic_matrix(component_matrix)
 
-	#calculate change of matrices
-	#diff = np.subtract(new, old)
-	#print diff
+		for l in xrange(max_loops):
+			# Expansion step
+			component_matrix = np.dot(component_matrix, component_matrix)
+
+			# Inflation step
+			# Assumes we want to square
+			component_matrix = np.power(component_matrix, r)
+
+			# Normalize matrix and threshold close-to-zero
+			component_matrix = column_stochastic_matrix(component_matrix)
+			component_matrix = threshold_reduction_vectorized(component_matrix)
+
+		#print component_matrix
+
+		# Assumes n by n matrix
+		clusters = set()
+		n = len(component_matrix)
+		for row in xrange(n):
+			attracted = [i for i in xrange(n) if component_matrix[row,i] > 0]
+			if attracted != []:
+				cluster = frozenset(attracted + [row])
+				clusters.add(cluster)
+
+		# Build lookup table for a gene's clusters
+		#print "Genes: ", genes
+		cluster_lookup = {}
+		cluster_id = 1
+		for cluster in clusters:
+			#print cluster
+			for element in cluster:
+				cluster_lookup[genes[element]] = cluster_lookup.get(genes[element], []) + [cluster_id]
+			cluster_id += 1
+		return cluster_lookup
+
+def write_cluster_lookup(cluster_lookup, filename):
+	with open(filename, "w") as outfile:
+		for gene in cluster_lookup:
+			for cluster in cluster_lookup[gene]:
+				outfile.write("%s %s\n" % (gene, cluster))
+
+start = time.time()
+cluster_lookup = markov_clustering(sys.argv[1], int(sys.argv[2]))
+stop = time.time()
+write_cluster_lookup(cluster_lookup, "Data/mcl_clusters.txt")
+print "Total run time: %.4f sec" % (stop - start)
