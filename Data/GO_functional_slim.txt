@@ -1,0 +1,201 @@
+GO ID	GO term	# of direct and indirect annotations	# of expert votes (out of 6)
+GO:0043037	translation	417	4
+GO:0007010	cytoskeleton organization and biogenesis	286	4
+GO:0006366	transcription from RNA polymerase II promoter	270	5
+GO:0016192	vesicle-mediated transport	269	4
+GO:0006082	organic acid metabolism	269	4
+GO:0000279	M phase	256	6
+GO:0016072	rRNA metabolism	249	4
+GO:0045184	establishment of protein localization	244	4
+GO:0007001	chromosome organization and biogenesis (sensu Eukaryota)	236	4
+GO:0000278	mitotic cell cycle	222	4
+GO:0005975	carbohydrate metabolism	219	6
+GO:0006629	lipid metabolism	216	4
+GO:0009308	amine metabolism	216	4
+GO:0007046	ribosome biogenesis	211	4
+GO:0006323	DNA packaging	201	6
+GO:0006519	amino acid and derivative metabolism	195	5
+GO:0006793	phosphorus metabolism	187	5
+GO:0006310	DNA recombination	186	6
+GO:0016071	mRNA metabolism	183	4
+GO:0006974	response to DNA damage stimulus	168	5
+GO:0006066	alcohol metabolism	157	5
+GO:0006508	proteolysis and peptidolysis	154	5
+GO:0006461	protein complex assembly	150	4
+GO:0051186	cofactor metabolism	145	4
+GO:0000902	cellular morphogenesis	142	4
+GO:0007047	cell wall organization and biogenesis	141	4
+GO:0000074	regulation of cell cycle	135	5
+GO:0051321	meiotic cell cycle	129	5
+GO:0008380	RNA splicing	126	4
+GO:0016481	negative regulation of transcription	125	4
+GO:0051301	cell division	124	4
+GO:0006811	ion transport	106	4
+GO:0006913	nucleocytoplasmic transport	105	5
+GO:0006260	DNA replication	103	5
+GO:0019953	sexual reproduction	100	4
+GO:0000746	conjugation	100	5
+GO:0030435	sporulation	99	4
+GO:0051169	nuclear transport	99	5
+GO:0007059	chromosome segregation	99	4
+GO:0006399	tRNA metabolism	96	5
+GO:0050801	ion homeostasis	96	4
+GO:0007005	mitochondrion organization and biogenesis	90	5
+GO:0009117	nucleotide metabolism	88	4
+GO:0045333	cellular respiration	87	5
+GO:0040029	"regulation of gene expression, epigenetic"	81	4
+GO:0051325	interphase	79	5
+GO:0015931	"nucleobase, nucleoside, nucleotide and nucleic acid transport"	78	4
+GO:0019954	asexual reproduction	78	4
+GO:0016458	gene silencing	76	5
+GO:0006766	vitamin metabolism	72	5
+GO:0030447	filamentous growth	72	4
+GO:0051236	establishment of RNA localization	70	5
+GO:0046483	heterocycle metabolism	69	4
+GO:0009100	glycoprotein metabolism	69	5
+GO:0006512	ubiquitin cycle	67	6
+GO:0019236	response to pheromone	67	5
+GO:0045941	positive regulation of transcription	65	4
+GO:0006457	protein folding	62	6
+GO:0006997	nuclear organization and biogenesis	62	5
+GO:0006401	RNA catabolism	59	4
+GO:0006970	response to osmotic stress	57	6
+GO:0006352	transcription initiation	56	6
+GO:0007264	small GTPase mediated signal transduction	56	5
+GO:0006944	membrane fusion	55	5
+GO:0006725	aromatic compound metabolism	55	6
+GO:0006790	sulfur metabolism	53	6
+GO:0006800	oxygen and reactive oxygen species metabolism	52	6
+GO:0015849	organic acid transport	51	4
+GO:0015837	amine transport	48	5
+GO:0007034	vacuolar transport	46	5
+GO:0008219	cell death	46	4
+GO:0000067	DNA replication and chromosome cycle	42	5
+GO:0007568	aging	41	4
+GO:0007166	cell surface receptor linked signal transduction	39	4
+GO:0006383	transcription from RNA polymerase III promoter	38	6
+GO:0007033	vacuole organization and biogenesis	37	4
+GO:0006473	protein amino acid acetylation	37	5
+GO:0007031	peroxisome organization and biogenesis	36	5
+GO:0006807	nitrogen compound metabolism	36	6
+GO:0048308	organelle inheritance	35	4
+GO:0042157	lipoprotein metabolism	35	5
+GO:0007032	endosome organization and biogenesis	35	4
+GO:0008643	carbohydrate transport	34	5
+GO:0016485	protein processing	32	5
+GO:0006914	autophagy	32	5
+GO:0006112	energy reserve metabolism	31	6
+GO:0006118	electron transport	31	6
+GO:0006417	regulation of protein biosynthesis	30	4
+GO:0006360	transcription from RNA polymerase I promoter	28	6
+GO:0045185	maintenance of protein localization	27	5
+GO:0043284	biopolymer biosynthesis	25	4
+GO:0006818	hydrogen transport	24	6
+GO:0006354	RNA elongation	23	6
+GO:0007530	sex determination	22	4
+GO:0031123	RNA 3'-end processing	20	4
+GO:0009266	response to temperature	20	5
+GO:0010035	response to inorganic substance	20	4
+GO:0050790	regulation of enzyme activity	20	5
+GO:0051052	regulation of DNA metabolism	20	5
+GO:0007243	protein kinase cascade	20	5
+GO:0008213	protein amino acid alkylation	20	5
+GO:0006869	lipid transport	20	6
+GO:0007155	cell adhesion	18	4
+GO:0006081	aldehyde metabolism	18	6
+GO:0019748	secondary metabolism	17	4
+GO:0018193	peptidyl-amino acid modification	17	5
+GO:0048284	organelle fusion	17	5
+GO:0006113	fermentation	16	6
+GO:0006353	transcription termination	15	6
+GO:0019932	second-messenger-mediated signaling	15	5
+GO:0043094	metabolic compound salvage	15	5
+GO:0030705	cytoskeleton-dependent intracellular transport	15	5
+GO:0009116	nucleoside metabolism	14	5
+GO:0042594	response to starvation	13	4
+GO:0006476	protein amino acid deacetylation	13	6
+GO:0031023	microtubule organizing center organization and biogenesis	13	4
+GO:0015893	drug transport	13	4
+GO:0000160	two-component signal transduction system (phosphorelay)	12	6
+GO:0006986	response to unfolded protein	12	6
+GO:0006730	one-carbon compound metabolism	12	6
+GO:0006056	mannoprotein metabolism	12	6
+GO:0001510	RNA methylation	11	6
+GO:0006839	mitochondrial transport	11	6
+GO:0006308	DNA catabolism	11	6
+GO:0030261	chromosome condensation	11	6
+GO:0009415	response to water	10	5
+GO:0008298	intracellular mRNA localization	10	5
+GO:0045454	cell redox homeostasis	10	5
+GO:0016050	vesicle organization and biogenesis	9	5
+GO:0015891	siderophore transport	9	5
+GO:0009306	protein secretion	9	4
+GO:0006276	plasmid maintenance	9	6
+GO:0051248	negative regulation of protein metabolism	9	5
+GO:0007039	vacuolar protein catabolism	8	5
+GO:0016074	snoRNA metabolism	8	5
+GO:0051261	protein depolymerization	8	4
+GO:0006518	peptide metabolism	8	5
+GO:0051049	regulation of transport	7	5
+GO:0006280	mutagenesis	7	6
+GO:0051180	vitamin transport	6	6
+GO:0009410	response to xenobiotic stimulus	6	5
+GO:0007584	response to nutrients	6	4
+GO:0009743	response to carbohydrate stimulus	6	4
+GO:0016925	protein sumoylation	6	5
+GO:0000338	protein deneddylation	6	6
+GO:0015791	polyol transport	6	5
+GO:0001522	pseudouridine synthesis	5	6
+GO:0009225	nucleotide-sugar metabolism	5	5
+GO:0051129	negative regulation of cell organization and biogenesis	5	4
+GO:0007029	ER organization and biogenesis	5	5
+GO:0006265	DNA topological change	5	6
+GO:0016073	snRNA metabolism	4	5
+GO:0009452	RNA capping	4	5
+GO:0042176	regulation of protein catabolism	4	6
+GO:0018065	protein-cofactor linkage	4	5
+GO:0045116	protein neddylation	4	5
+GO:0015833	peptide transport	4	5
+GO:0042180	ketone metabolism	4	5
+GO:0006984	ER-nuclear signaling pathway	4	6
+GO:0051181	cofactor transport	4	5
+GO:0006390	transcription from mitochondrial promoter	3	6
+GO:0009268	response to pH	3	5
+GO:0017006	protein-tetrapyrrole linkage	3	5
+GO:0007009	plasma membrane organization and biogenesis	3	4
+GO:0050874	organismal physiological process	3	5
+GO:0048285	organelle fission	3	5
+GO:0042044	fluid transport	3	5
+GO:0009581	detection of external stimulus	3	4
+GO:0016032	viral life cycle	2	4
+GO:0009847	spore germination	2	5
+GO:0051238	sequestering of metal ion	2	5
+GO:0009303	rRNA transcription	2	5
+GO:0009966	regulation of signal transduction	2	4
+GO:0051252	regulation of RNA metabolism	2	6
+GO:0016926	protein desumoylation	2	5
+GO:0018987	osmoregulation	2	5
+GO:0000280	nuclear division	2	4
+GO:0006662	glycerol ether metabolism	2	6
+GO:0015976	carbon utilization	2	4
+GO:0007624	ultradian rhythm	1	5
+GO:0042214	terpene metabolism	1	5
+GO:0009302	snoRNA transcription	1	5
+GO:0009636	response to toxin	1	4
+GO:0009314	response to radiation	1	5
+GO:0045471	response to ethanol	1	5
+GO:0046677	response to antibiotic	1	5
+GO:0001101	response to acid	1	5
+GO:0045595	regulation of cell differentiation	1	4
+GO:0050821	protein stabilization	1	5
+GO:0051258	protein polymerization	1	4
+GO:0009305	protein amino acid biotinylation	1	5
+GO:0018410	peptide or protein carboxyl-terminal blocking	1	5
+GO:0030397	membrane disassembly	1	5
+GO:0044419	interaction between organisms	1	4
+GO:0007030	Golgi organization and biogenesis	1	5
+GO:0006858	extracellular transport	1	6
+GO:0006266	DNA ligation	1	6
+GO:0006033	chitin localization	1	6
+GO:0016998	cell wall catabolism	1	5
+GO:0046713	boron transport	1	4
