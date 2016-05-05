@@ -44,7 +44,9 @@ class GoEnrich():
 
 class GoDictionary():
     def __init__(self):
-        self.go_dict = self.parse_terms()
+        #self.go_dict = self.parse_terms()
+        # functional -
+        self.go_dict = self.parse_functional_terms()
 
     def get_terms_for_gene(self, gene_name='YBL021C'):
         if gene_name in self.go_dict.keys():
@@ -75,6 +77,27 @@ class GoDictionary():
                     else:
                         gene_dict[row[0]] = [row[5]]
         return gene_dict
+
+    def parse_functional_terms(self,
+                               go_mapping='../Data/go_slim_mapping.tab',
+                               go_functional_filename='../Data/GO_functional_slim.txt'):
+
+        go_functional_list = []
+        with open(go_functional_filename, 'r') as csvfile:
+            goreader = csv.reader(csvfile, delimiter='\t')
+            for row in goreader:
+                go_functional_list.append(row[0])
+
+        gene_dict = self.parse_terms(go_mapping)
+
+        functional_dict = {}
+        for key in gene_dict:
+            functional_dict[key] = []
+            for annotation in gene_dict[key]:
+                if annotation in go_functional_list:
+                    functional_dict[key].append(annotation)
+
+        return functional_dict
 
 if __name__ == "__main__":
     # go_dict = GoDictionary()
