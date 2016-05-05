@@ -2,7 +2,7 @@ import OrderedSet
 import networkx as nx
 
 ################################################################################
-# Subroutines for checking the data for properties
+# Misc
 ################################################################################
 
 def check_arcs(filename="Data/yeast_data.txt"):
@@ -25,6 +25,29 @@ def check_arcs(filename="Data/yeast_data.txt"):
                   (tail, head, score, head, tail, data[(head,tail)])
             else:
                 data[(tail, head)] = score
+
+def convert_correlation_matrix(input_filename="Data/correlation_matrix.csv",
+  output_filename="Data/Unreduced/correlation_matrix.csv"):
+    """
+    Converts Data/correlation_matrix.txt to Data/Unreduced/correlation_matrix.csv.
+    Adds tabs, removes useless row/col.
+
+    Input:
+        filename (string)
+    Output:
+        Writes Data/Unreduced/correlation_matrix.csv
+    """
+    with open(input_filename, "r") as infile, open(output_filename, "w") as outfile:
+        line = infile.readline()
+        line = line.replace("\n", "")
+        line = line.split("\t")
+        outfile.write(("," + "".join(["%s, " % item for item in line]) + "\n"))
+        infile.readline() # Throw out garbage line
+        for line in infile.readlines():
+            line = line.replace("\n", "").replace("NaN", "0")
+            line = line.split("\t")
+            del line[1]
+            outfile.write(("".join(["%s, " % item for item in line]) + "\n"))
 
 ################################################################################
 # Subroutines for populating data structures from files
@@ -80,12 +103,13 @@ def build_edgelist(filename="Data/clean_yeast_data.txt"):
         edgelist (dictionary[(gene1, gene2)] = (score, pvalue))
     """
     edgelist = {}
-    vertices = OrderedSet()
+    vertices = OrderedSet.OrderedSet()
     with open(filename, "r") as infile:
         for line in infile:
             tail, head, score, pvalue = line.split()
             vertices.add(tail)
             vertices.add(head)
+            edgelist[(tail, head)] = (score, pvalue)
         print "File %s has %d nodes and %d edges" % \
               (filename, len(vertices), len(edgelist))
         return vertices, edgelist
@@ -106,6 +130,26 @@ def build_graph(filename="Data/clean_yeast_data.txt"):
         G.add_node(tail)
         G.add_node(head)
         G.add_edge(tail, head, score=score, pvalue=pvalue)
+    print "Constructed a graph with %d nodes and %d edges" % \
+      (G.order(), G.size())
+    return G
+
+def build_cluster_graph(filename):
+    """
+    Read in a clustered data file into a NetworkX graph.
+
+    Input:
+        filename (string) [not raw data]
+    Output:
+        G (NetworkX Graph)
+    """
+    G = nx.Graph()
+    infile = open(filename, "r")
+    for line in infile:
+        tail, head, score, pvalue, cluster = line.split()
+        G.add_node(tail)
+        G.add_node(head)
+        G.add_edge(tail, head, score=score, pvalue=pvalue, cluster=cluster)
     print "Constructed a graph with %d nodes and %d edges" % \
       (G.order(), G.size())
     return G
@@ -159,9 +203,9 @@ def write_adjacency_matrices(vertices, edgelist,
         Write adjacency matrices to the corresponding filenames in this format:
              , gene1, gene2, gene3, ...
         gene1, score, score, score, ...
-        gene2, ...
+        gene2, score, score, score, ...
         ...
-        Use score for one and pvalue for the other.
+        One matrix uses score, the other uses pvalue.
     """
 
     with open(score_filename, "w") as score_outfile, open(pvalue_filename, "w") as pvalue_outfile:
@@ -185,32 +229,32 @@ def write_adjacency_matrices(vertices, edgelist,
             pvalue_row = ""
 
 # TODO: Hack, please replace
-def write_clusters():
-    G = build_graph()
-    print len(G.nodes())
+def write_with_clusters(vertices, edgelist, cluster_filename, output_filename):
+    """
+    Writes an edgelist file with clusters.
+    If both endpoints are in the cluster, we know the edge's cluster.
+    Otherwise we remove the edge as our reduction.
+
+    Input:
+        vertices (ordered list)
+        edgelist (dictionary[(gene1, gene2)] = (score, pvalue))
+        cluster_filename (string)
+    Output:
+        Writes the edgelist to a file with columns "gene1, gene2, score, pvalue, cluster"
+    """
+
     cluster_lookup = {}
-    cluster_data = open("Data/cluster_idx200.csv", "r")
-    i = 0
+    cluster_data = open(cluster_filename, "r")
     for line in cluster_data.readlines():
-        try:
-            cluster_lookup[int(line)] += G.nodes()[i]
-        except:
-            try:
-                cluster_lookup[int(line)] = [G.nodes()[i]]
-            except:
-                break
-        i += 1
+        gene, cluster = line.split()
+    #    cluster_lookup[gene] = cluster_lookup.get(gene, []) + [cluster]
+        cluster_lookup[gene] = cluster
+    #for key in cluster_lookup:
+    #    print "Cluster ", key, " size: ", len(cluster_lookup[key])
 
-    for key in cluster_lookup:
-        print key, "size: ", len(cluster_lookup[key])
-
-    for key1 in cluster_lookup:
-        for key2 in cluster_lookup:
-            for v1 in cluster_lookup[key1]:
-                for v2 in cluster_lookup[key2]:
-                    if key1 != key2:
-                        try:
-                            G.remove_edge(v1, v2)
-                        except:
-                            pass
-    nx.write_gexf(G, "Data/cluster200.gexf")
+    with open(output_filename, "w") as outfile:
+        for (gene1, gene2) in edgelist:
+            #print "Gene1: %s  Gene2: %s  Cluster1: %s  Cluster2: %s" % (gene1, gene2, cluster_lookup[gene1], cluster_lookup[gene2])
+            if cluster_lookup[gene1] == cluster_lookup[gene2]:
+                score, pvalue = edgelist[(gene1, gene2)]
+                outfile.write("%s %s %s %s %s\n" % (gene1, gene2, score, pvalue, cluster_lookup[gene1][0]))
