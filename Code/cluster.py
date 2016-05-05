@@ -5,129 +5,93 @@ import matplotlib
 import sys
 import csv
 import numpy as np
-
-mcl_loops = int(sys.argv[2])
-clusterList = []
-
-#with open(sys.argv[1], 'r') as reader:
-#	G = nx.DiGraph()
-#	content = reader.readlines()
-
-#	for row in content:
-#		gene1, gene2, weight = row.split()
-#		G.add_edge(gene1, gene2, weight=abs(float(weight)))
+import time
 
 
+def column_stochastic_matrix(matrix):
+	# Row-stochasticize matrix
+	for col in xrange(len(matrix)):
+		col_sum = np.sum(matrix[:,col])
+		if col_sum != 0:
+			matrix[:,col] = np.divide(matrix[:,col], col_sum)
+	return matrix
 
-#take adjacency matrix instead of an edge list
-with open(sys.argv[1], 'r') as f: 
-	reader = csv.reader(f)
-	data_as_list = list(reader)
-	genes = data_as_list[0]
-	del genes[0]
-	del data_as_list[0]
-	#print data_as_list
+def threshold_reduction(element, threshold=0.00001):
+	if element < threshold:
+		return 0
+	else:
+		return element
 
-	for row in data_as_list:
-		del row[0]
-		for index in range(0, len(row)):
-			row[index] = float(row[index])
-	#print data_as_list
+threshold_reduction_vectorized = np.vectorize(threshold_reduction)
 
+def markov_clustering(filename, max_loops=10):
+	# Read adjacency matrix
+	with open(sys.argv[1], 'r') as infile:
+		data = list(csv.reader(infile))
+		genes = [x.replace(" ", "") for x in data[0]]
 
-mat = np.array(data_as_list)
-#print mat
+		# Remove headers
+		del data[0]
+		del genes[0]
 
-G = nx.from_numpy_matrix(mat, create_using=nx.DiGraph())
+		for row in data:
+			del row[0] # Remove header
+			row = [float(v) for v in row]
 
-#read through connected components
-components = nx.weakly_connected_components(G)
+	# Construct the graph
+	adjacency_matrix = np.array(data)
+	G = nx.from_numpy_matrix(adjacency_matrix, create_using=nx.DiGraph())
 
+	# Loop over each component
+	components = nx.weakly_connected_components(G)
+	for component in components:
+		# Create component's matrix
+		component_matrix = nx.to_numpy_matrix(G, nodelist=component)
+		###print "Component's adjacency matrix: \n", component_matrix
 
-#find clusters
-for component in components:
-	#print "curr componet", component
+		# Stochastcize the columns
+		component_matrix = column_stochastic_matrix(component_matrix)
 
-	#create matrix
-	adjacency_matrix = nx.to_numpy_matrix(G, nodelist=component)
-	#print adjacency_matrix
-	cpy = adjacency_matrix
+		for l in xrange(max_loops):
+			# Expansion step
+			component_matrix = np.dot(component_matrix, component_matrix)
 
-	#normalize matrix
-	for j in xrange(0, len(adjacency_matrix)):
-		sum = 0
-		for k in xrange(len(adjacency_matrix)):
-			sum += adjacency_matrix.item((k,j))
-		for m in xrange(len(adjacency_matrix)):
-			if sum != 0:
-				cpy[m,j] = adjacency_matrix.item(m,j)/sum
-	#print cpy
-	old = cpy
+			# Inflation step
+			# Assumes we want to square
+			component_matrix = np.square(component_matrix)
 
-	for l in xrange(mcl_loops):
-		exp = np.dot(old, old)
-		#print exp
+			# Normalize matrix and threshold close-to-zero
+			component_matrix = column_stochastic_matrix(component_matrix)
+			component_matrix = threshold_reduction_vectorized(component_matrix)
 
-		#inflation:
-		#square all elements in matrix
-		inf = np.square(exp)
-		#print inf
+		# Assumes n by n matrix
+		clusters = set()
+		n = len(component_matrix)
+		for row in xrange(n):
+			attracted = [i for i in xrange(n) if component_matrix[row,i] > 0]
+			if attracted != []:
+				cluster = frozenset(attracted + [row])
+				clusters.add(cluster)
 
-		#normalize matrix
-		new = inf
-		for j in range(0, len(inf)):
-			sum = 0
-			for k in range(0, len(inf)):
-				sum = sum + inf.item((k,j))
-			for m in range(0, len(inf)):
-				if sum != 0:
-					new[m,j] = inf.item(m,j)/sum
-					if new[m,j] < 0.000001:
-						new[m,j] = 0
-		old = new
-	#print "Converged to: \n", old
-	#find cluster!
-	#every pair (i, j) which has a non-zero value are in the same cluster
-	for y in range(0, len(old)):	#col
-		for z in range(0, len(old)):	#row
-			if old.item(z,y) > 0.00001:
-				#print "Hit", y, z
-				add_flag = 0
-				for c in clusterList: 
-					if component[y] in c or component[z] in c:
-						c.add(component[z])
-						c.add(component[y])
-						add_flag = 1
-						break
-				if add_flag == 0:
-					#print "new cluster:", component[y], component[z]
-					new_cluster = [component[y], component[z]]
-					clusterList.append(set(new_cluster))
+		# Build lookup table for a gene's clusters
+		#print "Genes: ", genes
+		cluster_lookup = {}
+		cluster_id = 1
+		for cluster in clusters:
+			#print cluster
+			for element in cluster:
+				cluster_lookup[genes[element]] = cluster_lookup.get(genes[element], []) + [cluster_id]
+			cluster_id += 1
+		return cluster_lookup
 
+def write_cluster_lookup(cluster_lookup, filename):
+	with open(filename, "w") as outfile:
+		for gene in cluster_lookup:
+			for cluster in cluster_lookup[gene]:
+				outfile.write("%s %s\n" % (gene, cluster))
 
-#print clusterList
-#output textfile
-
-writer = open('output.txt', 'w')
-for cl in range(0, len(list(clusterList))):
-	current_cluster = list(clusterList[cl])
-	#print current_cluster
-	for el in current_cluster:
-		#print genes[el], cl+1
-		writer.write("%s \t%s\n" % (genes[el], cl+1))
-
-
-
-#for cl in range(1, len(clusterList)+1):
-#	current_cluster = clusterList(cl-1)
-#	print current_cluster
-#	for el in list(current_cluster):
-#		print genes[el], cl
-
-
-
-
-
-	#calculate change of matrices
-	#diff = np.subtract(new, old)
-	#print diff
+start = time.time()
+cluster_lookup = markov_clustering(sys.argv[1], int(sys.argv[2]))
+stop = time.time()
+write_cluster_lookup(cluster_lookup, "Data/mcl_clusters.txt")
+print "Total run time: %.4f sec" % (stop - start)
