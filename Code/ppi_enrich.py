@@ -2,7 +2,7 @@ import csv
 
 
 class PPIDictionary():
-    def parse_ppi(self, filename='../Data/sparse-yeast-ppi.txt'):
+    def parse_ppi(self, filename='../Data/evaluation_reference/sparse-yeast-ppi.txt'):
         protein_dict = {}
         with open(filename, 'r') as csvfile:
             protein_reader = csv.reader(csvfile, delimiter='\t')
