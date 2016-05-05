@@ -6,6 +6,7 @@ import multiprocessing as mp
 from multiprocessing import Pool
 
 import random
+import sys
 
 go_dict = go_enrich.GoDictionary()
 ppi_dict = ppi_enrich.PPIDictionary().parse_ppi()
