@@ -35,9 +35,10 @@ def markov_clustering(filename, max_loops=20, r=1.4):
 		del data[0]
 		del genes[0]
 
-		for row in data:
+		for i in xrange(len(data)):
+			row = data[i]
 			del row[0] # Remove header
-			row = [float(v) for v in row]
+			data[i] = [abs(float(v)) for v in row]
 
 	# Construct the graph
 	adjacency_matrix = np.array(data)
@@ -48,7 +49,7 @@ def markov_clustering(filename, max_loops=20, r=1.4):
 	for component in components:
 		# Create component's matrix
 		component_matrix = nx.to_numpy_matrix(G, nodelist=component)
-		###print "Component's adjacency matrix: \n", component_matrix
+		#print "Component's adjacency matrix: \n", component_matrix
 
 		# Stochastcize the columns
 		component_matrix = column_stochastic_matrix(component_matrix)
